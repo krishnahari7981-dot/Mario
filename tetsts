@@ -1,0 +1,518 @@
+WITH G_1 AS (SELECT  DISTINCT GCC.SEGMENT1,GCC.SEGMENT2,GCC.SEGMENT3,GCC.SEGMENT4,GCC.SEGMENT5,GCC.SEGMENT6,GCC.SEGMENT7
+	,CE.inventory_item_id ,CE.SOURCE_DOC_NUMBER
+FROM XLA_AE_LINES XAL,XLA_AE_HEADERS XAH,XLA_TRANSACTION_ENTITIES XTE,
+CMR_RCV_EVENTS CE,GL_CODE_COMBINATIONS GCC
+WHERE CE.ACCOUNTING_EVENT_ID = XTE.SOURCE_ID_INT_1
+AND XTE.APPLICATION_ID = 10096
+AND XTE.ENTITY_ID = XAH.ENTITY_ID
+AND XAH.AE_HEADER_ID = XAL.AE_HEADER_ID
+AND XAL.CODE_COMBINATION_ID = GCC.CODE_COMBINATION_ID
+AND XAH.EVENT_TYPE_CODE  IN ('TRADE_RECEIPT_ACCRUAL')
+AND XAL.ACCOUNTING_CLASS_CODE = 'INTERCOMPANY_ACCRUAL'
+),
+G_2 AS (SELECT   DISTINCT GCC.SEGMENT1,GCC.SEGMENT2,GCC.SEGMENT3,GCC.SEGMENT4,GCC.SEGMENT5,GCC.SEGMENT6,GCC.SEGMENT7
+	, CE.SOURCE_DOC_NUMBER, CE.inventory_item_id
+FROM XLA_AE_LINES XAL,XLA_AE_HEADERS XAH,XLA_TRANSACTION_ENTITIES XTE,
+CMR_RCV_EVENTS CE,GL_CODE_COMBINATIONS GCC
+WHERE CE.ACCOUNTING_EVENT_ID = XTE.SOURCE_ID_INT_1
+AND XTE.APPLICATION_ID = 10096
+AND XTE.ENTITY_ID = XAH.ENTITY_ID
+AND XAH.AE_HEADER_ID = XAL.AE_HEADER_ID
+AND XAL.CODE_COMBINATION_ID = GCC.CODE_COMBINATION_ID
+AND XAH.EVENT_TYPE_CODE  IN ('TRADE_RECEIPT_ACCRUAL')
+AND XAL.ACCOUNTING_CLASS_CODE = 'TRADE_CLEARING'
+),
+G_3 AS (SELECT  DISTINCT GCC.SEGMENT1,GCC.SEGMENT2,GCC.SEGMENT3,GCC.SEGMENT4,GCC.SEGMENT5,GCC.SEGMENT6,GCC.SEGMENT7
+	, ct.inventory_item_id, CCD.TRANSACTION_NUMBER
+from
+CST_COST_DISTRIBUTIONS CCD,
+CST_TRANSACTIONS ct,
+xla_transaction_entities XTE,
+XLA_AE_HEADERS XAH,
+xla_ae_lines XAL,
+GL_CODE_COMBINATIONS GCC
+WHERE 1 = 1
+AND CCD.DISTRIBUTION_ID = XTE.SOURCE_ID_INT_1
+AND XTE.ENTITY_ID = XAH.ENTITY_ID
+AND XAH.AE_HEADER_ID = XAL.AE_HEADER_ID
+AND XAL.CODE_COMBINATION_ID = GCC.CODE_COMBINATION_ID
+AND XTE.APPLICATION_ID = 707
+AND CCD.ACCOUNTED_FLAG = 'F'
+AND ct.transaction_id = ccd.transaction_id
+AND ccd.EVENT_TYPE_CODE in ('TRADE_INTRANSIT_RECEIPT')
+AND XAL.ACCOUNTING_CLASS_CODE = 'TRADE_CLEARING'
+ -- and rownum = 1 
+ ),
+ G_4 AS (SELECT  DISTINCT GCC.SEGMENT1,GCC.SEGMENT2,GCC.SEGMENT3,GCC.SEGMENT4,GCC.SEGMENT5,GCC.SEGMENT6,GCC.SEGMENT7
+		, ct.inventory_item_id, CCD.TRANSACTION_NUMBER
+from
+CST_COST_DISTRIBUTIONS CCD,
+CST_TRANSACTIONS ct,
+xla_transaction_entities XTE,
+XLA_AE_HEADERS XAH,
+xla_ae_lines XAL,
+GL_CODE_COMBINATIONS GCC
+WHERE 1 = 1
+AND CCD.DISTRIBUTION_ID = XTE.SOURCE_ID_INT_1
+AND XTE.ENTITY_ID = XAH.ENTITY_ID
+AND XAH.AE_HEADER_ID = XAL.AE_HEADER_ID
+AND XAL.CODE_COMBINATION_ID = GCC.CODE_COMBINATION_ID
+AND XTE.APPLICATION_ID = 707
+AND CCD.ACCOUNTED_FLAG = 'F'
+AND ct.transaction_id = ccd.transaction_id
+AND ccd.EVENT_TYPE_CODE in ('TRADE_INTRANSIT_RECEIPT')
+AND XAL.ACCOUNTING_CLASS_CODE = 'TRADE_INTRANSIT_VALUATION'
+ -- and rownum = 1 
+ ),
+ G_5 AS (SELECT   DISTINCT GCC.SEGMENT1,GCC.SEGMENT2,GCC.SEGMENT3,GCC.SEGMENT4,GCC.SEGMENT5,GCC.SEGMENT6,GCC.SEGMENT7
+	, CE.SOURCE_DOC_NUMBER, CE.inventory_item_id
+FROM XLA_AE_LINES XAL,XLA_AE_HEADERS XAH,XLA_TRANSACTION_ENTITIES XTE,
+CMR_RCV_EVENTS CE,GL_CODE_COMBINATIONS GCC
+WHERE CE.ACCOUNTING_EVENT_ID = XTE.SOURCE_ID_INT_1
+AND XTE.APPLICATION_ID = 10096
+AND XTE.ENTITY_ID = XAH.ENTITY_ID
+AND XAH.AE_HEADER_ID = XAL.AE_HEADER_ID
+AND XAL.CODE_COMBINATION_ID = GCC.CODE_COMBINATION_ID
+AND XAH.EVENT_TYPE_CODE  IN ('TRANSFER_ORDER_RECEIPT','TRANSFER_ORDER_LOGICAL_RECEIPT')
+AND XAL.ACCOUNTING_CLASS_CODE = 'TRADE_INTRANSIT_VALUATION'
+),
+G_6 AS (SELECT   DISTINCT GCC.SEGMENT1,GCC.SEGMENT2,GCC.SEGMENT3,GCC.SEGMENT4,GCC.SEGMENT5,GCC.SEGMENT6,GCC.SEGMENT7
+	, CE.SOURCE_DOC_NUMBER, CE.inventory_item_id
+FROM XLA_AE_LINES XAL,XLA_AE_HEADERS XAH,XLA_TRANSACTION_ENTITIES XTE,
+CMR_RCV_EVENTS CE,GL_CODE_COMBINATIONS GCC
+WHERE CE.ACCOUNTING_EVENT_ID = XTE.SOURCE_ID_INT_1
+AND XTE.APPLICATION_ID = 10096
+AND XTE.ENTITY_ID = XAH.ENTITY_ID
+AND XAH.AE_HEADER_ID = XAL.AE_HEADER_ID
+AND XAL.CODE_COMBINATION_ID = GCC.CODE_COMBINATION_ID
+AND XAH.EVENT_TYPE_CODE  IN ('TRANSFER_ORDER_RECEIPT','TRANSFER_ORDER_LOGICAL_RECEIPT')
+AND XAL.ACCOUNTING_CLASS_CODE = 'RECEIVING_INSPECTION'
+),
+G_7 AS (SELECT   DISTINCT GCC.SEGMENT1,GCC.SEGMENT2,GCC.SEGMENT3,GCC.SEGMENT4,GCC.SEGMENT5,GCC.SEGMENT6,GCC.SEGMENT7
+	,CE.SOURCE_DOC_NUMBER, CE.inventory_item_id
+FROM XLA_AE_LINES XAL,XLA_AE_HEADERS XAH,XLA_TRANSACTION_ENTITIES XTE,
+CMR_RCV_EVENTS CE,GL_CODE_COMBINATIONS GCC
+WHERE CE.ACCOUNTING_EVENT_ID = XTE.SOURCE_ID_INT_1
+AND XTE.APPLICATION_ID = 10096
+AND XTE.ENTITY_ID = XAH.ENTITY_ID
+AND XAH.AE_HEADER_ID = XAL.AE_HEADER_ID
+AND XAL.CODE_COMBINATION_ID = GCC.CODE_COMBINATION_ID
+AND XAH.EVENT_TYPE_CODE  IN ('TRANSFER_ORDER_DELIVER_TO_EXP','TRANSFER_ORDER_LOGICAL_DELIVER')
+AND XAL.ACCOUNTING_CLASS_CODE = 'RECEIVING_INSPECTION'
+),
+G_8 AS (SELECT   DISTINCT GCC.SEGMENT1,GCC.SEGMENT2,GCC.SEGMENT3,GCC.SEGMENT4,GCC.SEGMENT5,GCC.SEGMENT6,GCC.SEGMENT7
+	,CE.SOURCE_DOC_NUMBER, CE.inventory_item_id
+FROM XLA_AE_LINES XAL,XLA_AE_HEADERS XAH,XLA_TRANSACTION_ENTITIES XTE,
+CMR_RCV_EVENTS CE,GL_CODE_COMBINATIONS GCC
+WHERE CE.ACCOUNTING_EVENT_ID = XTE.SOURCE_ID_INT_1
+AND XTE.APPLICATION_ID = 10096
+AND XTE.ENTITY_ID = XAH.ENTITY_ID
+AND XAH.AE_HEADER_ID = XAL.AE_HEADER_ID
+AND XAL.CODE_COMBINATION_ID = GCC.CODE_COMBINATION_ID
+AND XAH.EVENT_TYPE_CODE  IN ('TRANSFER_ORDER_DELIVER_TO_EXP','TRANSFER_ORDER_LOGICAL_DELIVER')
+AND XAL.ACCOUNTING_CLASS_CODE = 'EXPENSE'
+)
+
+SELECT distinct 
+'NEW' AS "STATUS CODE",
+primaryledger AS "LEDGER ID",
+Effective_Date  AS "EFFECTIVE DATE OF TRANSACTION",
+Source AS "JOURNAL SOURCE",
+Category AS "JOURNAL CATEGORY",
+'USD' AS "CURRENCY CODE",
+Journal_creation_date   AS "JOURNAL ENTRY CREATION DATE",
+'A' AS "ACTUAL FLAG",
+SEGMENT1 AS "SEGMENT1",
+SEGMENT2 AS "SEGMENT2",
+SEGMENT3 AS "SEGMENT3",
+SEGMENT4 AS "SEGMENT4",
+SEGMENT5 AS "SEGMENT5",
+SEGMENT6 AS "SEGMENT6",
+SEGMENT7 AS "SEGMENT7",
+''"SEGMENT8",
+''"SEGMENT9",
+''"SEGMENT10",
+''"SEGMENT11",
+''"SEGMENT12",
+''"SEGMENT13",
+''"SEGMENT14",
+''"SEGMENT15",
+''"SEGMENT16",
+''"SEGMENT17",
+''"SEGMENT18",
+''"SEGMENT19",
+''"SEGMENT20",
+''"SEGMENT21",
+''"SEGMENT22",
+''"SEGMENT23",
+''"SEGMENT24",
+''"SEGMENT25",
+''"SEGMENT26",
+''"SEGMENT27",
+''"SEGMENT28",
+''"SEGMENT29",
+''"SEGMENT30",
+ENTERED_DR AS "ENTERED DEBIT AMOUNT",
+ENTERED_CR "ENTERED CREDIT AMOUNT",
+ENTERED_DR AS "ACCOUNTED DEBIT AMOUNT",
+ENTERED_CR "ACCOUNTED CREDIT AMOUNT",
+BATCH_NAME AS "REFERENCE1 (BATCH NAME)",
+BATCH_DESCRIPTION AS "REFERENCE2 (BATCH DESCRIPTION)",
+''"REFERENCE3",
+JOURNAL_NAME AS "REFERENCE4 (JOURNAL ENTRY NAME)",
+JOURNAL_DESCRIPTION AS "REFERENCE5 (JOURNAL ENTRY DESCRIPTION)",
+''"REFERENCE6 (JOURNAL ENTRY REFERENCE)",
+''"REFERENCE7 (JOURNAL ENTRY REVERSAL FLAG)",
+''"REFERENCE8 (JOURNAL ENTRY REVERSAL PERIOD)",
+''"REFERENCE9 (JOURNAL REVERSAL METHOD)",
+LINE_DESCRIPTION AS "REFERENCE10 (JOURNAL ENTRY LINE DESCRIPTION)",
+docnumber "REFERENCE COLUMN 1",
+receipt_number "REFERENCE COLUMN 2",
+shipment_number "REFERENCE COLUMN 3",
+line_number "REFERENCE COLUMN 4",
+Source "REFERENCE COLUMN 5",
+''"REFERENCE COLUMN 6",
+''"REFERENCE COLUMN 7",
+''"REFERENCE COLUMN 8",
+''"REFERENCE COLUMN 9",
+''"REFERENCE COLUMN 10",
+''"STATISTICAL AMOUNT",
+''"CURRENCY CONVERSION TYPE",
+''"CURRENCY CONVERSION DATE",
+''"CURRENCY CONVERSION RATE",
+TO_CHAR(SYSDATE,'MMDDYYYY') AS "INTERFACE GROUP IDENTIFIER",
+''"CONTEXT FIELD FOR JOURNAL ENTRY LINE DFF",
+''"ATTRIBUTE1 VALUE FOR JOURNAL ENTRY LINE DFF",
+''"ATTRIBUTE2 VALUE FOR JOURNAL ENTRY LINE DFF",
+''"ATTRIBUTE3 VALUE FOR JOURNAL ENTRY LINE DFF",
+''"ATTRIBUTE4 VALUE FOR JOURNAL ENTRY LINE DFF",
+''"ATTRIBUTE5 VALUE FOR JOURNAL ENTRY LINE DFF",
+''"ATTRIBUTE6 VALUE FOR JOURNAL ENTRY LINE DFF",
+''"ATTRIBUTE7 VALUE FOR JOURNAL ENTRY LINE DFF",
+''"ATTRIBUTE8 VALUE FOR JOURNAL ENTRY LINE DFF",
+''"ATTRIBUTE9 VALUE FOR JOURNAL ENTRY LINE DFF",
+''"ATTRIBUTE10 VALUE FOR JOURNAL ENTRY LINE DFF",
+''"ATTRIBUTE11 VALUE FOR CAPTURED INFORMATION DFF",
+''"ATTRIBUTE12 VALUE FOR CAPTURED INFORMATION DFF",
+''"ATTRIBUTE13 VALUE FOR CAPTURED INFORMATION DFF",
+''"ATTRIBUTE14 VALUE FOR CAPTURED INFORMATION DFF",
+''"ATTRIBUTE15 VALUE FOR CAPTURED INFORMATION DFF",
+''"ATTRIBUTE16 VALUE FOR CAPTURED INFORMATION DFF",
+''"ATTRIBUTE17 VALUE FOR CAPTURED INFORMATION DFF",
+''"ATTRIBUTE18 VALUE FOR CAPTURED INFORMATION DFF",
+''"ATTRIBUTE19 VALUE FOR CAPTURED INFORMATION DFF",
+''"ATTRIBUTE20 VALUE FOR CAPTURED INFORMATION DFF",
+''"CONTEXT FIELD FOR CAPTURED INFORMATION DFF",
+''"AVERAGE JOURNAL FLAG",
+''"CLEARING COMPANY",
+'Westgate Resorts US' AS "LEDGER NAME",
+''"ENCUMBRANCE TYPE ID",
+''"RECONCILIATION REFERENCE"
+--(SELECT DISTINCT PERIOD_NAME FROM GL_PERIOD_STATUSES WHERE Effective_Date BETWEEN START_DATE AND END_DATE) "PERIOD NAME"
+FROM
+((SELECT distinct
+primaryledger,
+gl_Date Effective_Date,
+gl_date Journal_creation_date,
+ Source,
+ Category,
+segment1,
+segment2,
+segment3,
+segment4,
+segment5,
+segment6,
+segment7,
+ROUND(sum(entered_dr),2) entered_dr,
+ROUND(sum(entered_cr),2) entered_cr,
+'TransferOrder_RptVar_'||docnumber||' '||TO_CHAR(SYSDATE,'MMDDYYYY') BATCH_NAME,
+'Transfer Order-'||docnumber||' '||'Receipt-'||receipt_number BATCH_DESCRIPTION,
+'TransferOrder_RptVar_'||docnumber||' '||TO_CHAR(SYSDATE,'MMDDYYYY')  JOURNAL_NAME,
+'Transfer Order-'||docnumber||' '||'Receipt-'||receipt_number||' '||'Requisition-'||req JOURNAL_DESCRIPTION,
+'Transfer Order-'||docnumber||' '||'Receipt-'||receipt_number||' '||'Requisition-'||req||' '||'Shipment -'||shipment_number||' '||'Item -'||item LINE_DESCRIPTION,
+docnumber,
+receipt_number,
+shipment_number,
+line_number
+FROM(SELECT  
+'TO Receipt Tax Variance' Source,
+'TO Receipt Tax Variance' Category,
+a.ledger_id primaryledger,
+'ManualGLAdj' nameofqry,
+a.receipt_number,
+a.docnumber,
+a.gl_date,
+a.GLADJAMT,
+a.TAX,
+a.AR,
+a.item,
+a.shipment_number,
+a.req,a.line_number,' 'JOURNAL,' 'BATCH,
+abs(((a.ar + nvl(a.tax,0)) - a.GLADJAMT)) entered_cr,
+0 entered_dr,
+a.segment1,
+a.segment2,
+a.segment3,
+a.segment4,
+a.segment5,
+a.segment6,
+a.segment7
+from
+(SELECT 
+nvl((select sum(rctll.extended_amount)
+  KEEP (DENSE_RANK LAST ORDER BY rctl.customer_trx_line_id, rctl.inventory_item_id,rctl.extended_amount ) extended_amount 
+ FROM
+ra_customer_trx_all rct,ra_customer_trx_lines_all rctl,ra_customer_trx_lines_all rctll
+where
+rct.customer_trx_id = rctl.customer_trx_id
+and rctll.LINK_TO_CUST_TRX_LINE_ID = rctl.customer_trx_line_id
+and rctl.interface_line_context = 'WG SFO'
+and rctl.sales_order = ce.source_doc_number
+and rctl.inventory_item_id = ito.inventory_item_id and rctl.INTERFACE_LINE_ATTRIBUTE7 = ce.REFERENCE_DOC_NUMBER
+),0) tax,
+nvl((select sum(rctl.extended_amount) 
+ KEEP (DENSE_RANK LAST ORDER BY rctl.customer_trx_line_id, rctl.inventory_item_id,rctl.extended_amount ) extended_amount 
+ FROM
+ra_customer_trx_lines_all rctl
+where
+1=1
+and rctl.interface_line_context = 'WG SFO'
+and rctl.sales_order = ce.source_doc_number
+and rctl.inventory_item_id = ito.inventory_item_id and rctl.INTERFACE_LINE_ATTRIBUTE7 = ce.REFERENCE_DOC_NUMBER
+),0) AR,
+ITH.HEADER_ID,
+max(TO_CHAR(ce.GL_DATE,'YYYY-MM-DD')) gl_date,
+ce.REFERENCE_DOC_NUMBER receipt_number,
+--crd.cmr_sub_ledger_id cmr_sub_ledger_id,
+decode(ce.event_source, 'TO', 'TransferOrder', ce.event_source) doctype,
+ce.source_doc_number docnumber,
+ce.shipment_number shipment_number,
+--iop.organization_code inv_org_code,
+max(ce.gl_date) acct_date,
+XAL.ACCOUNTING_CLASS_CODE accounting_line_type,
+--to_char(ctet.rec_nrec_tax_amt) correctamt,
+--to_char(round(ledger_amount, 5)) booked_amt,
+SUM(XAL.ENTERED_CR) gladjamt, 
+--cre.inv_shipping_transaction_id shipmenttxnid,
+ce.inventory_item_id inventory_item_id,
+ce.ledger_id ledger_id,
+ce.event_type_code event_type_code,
+(select distinct item_number from EGP_SYSTEM_ITEMS_B          where inventory_item_id = ito.inventory_item_id) item,
+(select requisition_number   from por_requisition_headers_all where requisition_header_id = ito.REQUISITION_ID) req,ito.LINE_NUMBER
+,G_1.segment1,
+G_1.segment2,
+G_1.segment3,
+G_1.segment4,
+G_1.segment5,
+G_1.segment6,
+G_1.segment7
+,CE.ACCOUNTING_EVENT_ID
+FROM 
+XLA_AE_LINES XAL,XLA_AE_HEADERS XAH,XLA_TRANSACTION_ENTITIES XTE,
+CMR_RCV_EVENTS CE,GL_CODE_COMBINATIONS GCC
+,INV_TRANSFER_ORDER_HEADERS ITH
+,INV_TRANSFER_ORDER_LINES   ITO
+,G_1
+WHERE CE.ACCOUNTING_EVENT_ID = XTE.SOURCE_ID_INT_1
+AND XTE.APPLICATION_ID = 10096
+AND XTE.ENTITY_ID = XAH.ENTITY_ID
+AND XAH.AE_HEADER_ID = XAL.AE_HEADER_ID
+AND XAL.CODE_COMBINATION_ID = GCC.CODE_COMBINATION_ID
+AND XAH.EVENT_TYPE_CODE='TRADE_RECEIPT_ACCRUAL'
+AND XAL.ACCOUNTING_CLASS_CODE = 'INTERCOMPANY_ACCRUAL'
+AND CE.SOURCE_DOC_NUMBER = ITH.HEADER_NUMBER
+AND CE.INVENTORY_ITEM_ID = ITO.INVENTORY_ITEM_ID
+AND ITH.HEADER_ID = ITO.HEADER_ID 
+and ITO.DESTINATION_TYPE_LOOKUP  = 'EXPENSE'
+AND G_1.SOURCE_DOC_NUMBER = ITH.HEADER_NUMBER
+AND G_1.INVENTORY_ITEM_ID = ITO.INVENTORY_ITEM_ID
+and (select sum(rctl.extended_amount) FROM
+ra_customer_trx_lines_all rctl
+where
+1=1
+and rctl.interface_line_context = 'WG SFO'
+and rctl.sales_order = ce.source_doc_number
+and rctl.inventory_item_id = ito.inventory_item_id and rctl.INTERFACE_LINE_ATTRIBUTE7 = ce.REFERENCE_DOC_NUMBER
+) is not null
+
+-- and CE.SOURCE_DOC_NUMBER||CE.REFERENCE_DOC_NUMBER||CE.shipment_number||ito.LINE_NUMBER||'TO Receipt Tax Variance' 
+ -- not in (select distinct  REFERENCE_1||REFERENCE_2||REFERENCE_3||REFERENCE_4||REFERENCE_5 from gl_je_lines where REFERENCE_1  is not null )
+
+AND NVL(ITO.RECEIVED_QTY,0) = NVL(ITO.REQUESTED_QTY,0)   -- added by hari to Exclude Partilally recived Tos
+AND ITO.STATUS_LOOKUP = 'CLOSED'                         -- added by hari to Exclude Partilally recived Tos
+
+group BY
+ith.HEADER_ID,CE.REFERENCE_DOC_NUMBER,ce.event_source,ce.source_doc_number,ce.shipment_number,
+XAL.ACCOUNTING_CLASS_CODE,ce.inventory_item_id,ce.ledger_id,ce.event_type_code,ito.inventory_item_id, ITO.LINE_ID,ith.header_number,
+ito.REQUISITION_ID,ito.LINE_NUMBER
+,G_1.segment1,
+G_1.segment2,
+G_1.segment3,
+G_1.segment4,
+G_1.segment5,
+G_1.segment6,
+G_1.segment7
+,CE.ACCOUNTING_EVENT_ID
+order by ce.source_doc_number
+)a
+where sign(((a.ar + nvl(a.tax,0)) - a.GLADJAMT))  = 1
+
+union ALL
+
+SELECT  
+'TO Receipt Tax Variance' Source,
+'TO Receipt Tax Variance' Category,
+a.ledger_id primaryledger,
+'ManualGLAdj' nameofqry,
+a.receipt_number,
+a.docnumber,
+a.gl_date,
+a.GLADJAMT,
+a.TAX,
+a.AR,
+a.item,
+a.shipment_number,
+a.req,a.line_number,' 'JOURNAL,' 'BATCH,
+0 entered_cr,
+abs(((a.ar + nvl(a.tax,0)) - a.GLADJAMT)) entered_dr,
+a.segment1,
+a.segment2,
+a.segment3,
+a.segment4,
+a.segment5,
+a.segment6,
+a.segment7
+from
+(SELECT 
+nvl((select sum(rctll.extended_amount)  
+KEEP (DENSE_RANK LAST ORDER BY rctl.customer_trx_line_id, rctl.inventory_item_id,rctl.extended_amount ) extended_amount  
+FROM
+ra_customer_trx_all rct,ra_customer_trx_lines_all rctl,ra_customer_trx_lines_all rctll
+where
+rct.customer_trx_id = rctl.customer_trx_id
+and rctll.LINK_TO_CUST_TRX_LINE_ID = rctl.customer_trx_line_id
+and rctl.interface_line_context = 'WG SFO'
+and rctl.sales_order = ce.source_doc_number
+and rctl.inventory_item_id = ito.inventory_item_id and rctl.INTERFACE_LINE_ATTRIBUTE7 = ce.REFERENCE_DOC_NUMBER
+),0) tax,
+nvl((select sum(rctl.extended_amount) 
+ KEEP (DENSE_RANK LAST ORDER BY rctl.customer_trx_line_id, rctl.inventory_item_id,rctl.extended_amount ) extended_amount  
+ FROM
+ra_customer_trx_lines_all rctl
+where
+1=1
+and rctl.interface_line_context = 'WG SFO'
+and rctl.sales_order = ce.source_doc_number
+and rctl.inventory_item_id = ito.inventory_item_id and rctl.INTERFACE_LINE_ATTRIBUTE7 = ce.REFERENCE_DOC_NUMBER
+),0) AR,
+ITH.HEADER_ID,
+max(TO_CHAR(ce.GL_DATE,'YYYY-MM-DD')) gl_date,
+ce.REFERENCE_DOC_NUMBER receipt_number,
+--crd.cmr_sub_ledger_id cmr_sub_ledger_id,
+decode(ce.event_source, 'TO', 'TransferOrder', ce.event_source) doctype,
+ce.source_doc_number docnumber,
+ce.shipment_number shipment_number,
+--iop.organization_code inv_org_code,
+max(ce.gl_date) acct_date,
+XAL.ACCOUNTING_CLASS_CODE accounting_line_type,
+--to_char(ctet.rec_nrec_tax_amt) correctamt,
+--to_char(round(ledger_amount, 5)) booked_amt,
+SUM(XAL.ENTERED_CR) gladjamt, 
+--cre.inv_shipping_transaction_id shipmenttxnid,
+ce.inventory_item_id inventory_item_id,
+ce.ledger_id ledger_id,
+ce.event_type_code event_type_code,
+(select distinct item_number from EGP_SYSTEM_ITEMS_B where inventory_item_id = ito.inventory_item_id) item,
+(select requisition_number from por_requisition_headers_all where requisition_header_id = ito.REQUISITION_ID) req,ito.LINE_NUMBER
+,G_2.segment1,
+G_2.segment2,
+G_2.segment3,
+G_2.segment4,
+G_2.segment5,
+G_2.segment6,
+G_2.segment7
+,CE.ACCOUNTING_EVENT_ID
+
+FROM 
+XLA_AE_LINES XAL,XLA_AE_HEADERS XAH,XLA_TRANSACTION_ENTITIES XTE,
+CMR_RCV_EVENTS CE,GL_CODE_COMBINATIONS GCC
+,INV_TRANSFER_ORDER_HEADERS ITH
+,INV_TRANSFER_ORDER_LINES   ITO
+,G_2
+WHERE CE.ACCOUNTING_EVENT_ID = XTE.SOURCE_ID_INT_1
+AND XTE.APPLICATION_ID = 10096
+AND XTE.ENTITY_ID = XAH.ENTITY_ID
+AND XAH.AE_HEADER_ID = XAL.AE_HEADER_ID
+AND XAL.CODE_COMBINATION_ID = GCC.CODE_COMBINATION_ID
+AND XAH.EVENT_TYPE_CODE='TRADE_RECEIPT_ACCRUAL'
+AND XAL.ACCOUNTING_CLASS_CODE = 'INTERCOMPANY_ACCRUAL'
+AND CE.SOURCE_DOC_NUMBER = ITH.HEADER_NUMBER
+AND CE.INVENTORY_ITEM_ID = ITO.INVENTORY_ITEM_ID
+AND ITH.HEADER_ID = ITO.HEADER_ID 
+and ITO.DESTINATION_TYPE_LOOKUP  = 'EXPENSE'
+AND G_2.SOURCE_DOC_NUMBER = ITH.HEADER_NUMBER
+AND G_2.INVENTORY_ITEM_ID = ITO.INVENTORY_ITEM_ID
+and (select sum(rctl.extended_amount) FROM
+ra_customer_trx_lines_all rctl
+where
+1=1
+and rctl.interface_line_context = 'WG SFO'
+and rctl.sales_order = ce.source_doc_number
+and rctl.inventory_item_id = ito.inventory_item_id and rctl.INTERFACE_LINE_ATTRIBUTE7 = ce.REFERENCE_DOC_NUMBER
+) is not null
+
+-- and CE.SOURCE_DOC_NUMBER||CE.REFERENCE_DOC_NUMBER||CE.shipment_number||ito.LINE_NUMBER||'TO Receipt Tax Variance'
+  -- not in (select distinct  REFERENCE_1||REFERENCE_2||REFERENCE_3||REFERENCE_4||REFERENCE_5 from gl_je_lines where REFERENCE_1  is not null )
+
+AND NVL(ITO.RECEIVED_QTY,0) = NVL(ITO.REQUESTED_QTY,0)  -- added by hari to Exclude Partilally recived Tos
+AND ITO.STATUS_LOOKUP = 'CLOSED' -- added by hari to Exclude Partilally recived Tos 
+
+
+group BY
+ith.HEADER_ID,CE.REFERENCE_DOC_NUMBER,ce.event_source,ce.source_doc_number,ce.shipment_number,
+XAL.ACCOUNTING_CLASS_CODE,ce.inventory_item_id,ce.ledger_id,ce.event_type_code,ito.inventory_item_id, ITO.LINE_ID,ith.header_number,
+ito.REQUISITION_ID,ito.LINE_NUMBER
+,G_2.segment1,
+G_2.segment2,
+G_2.segment3,
+G_2.segment4,
+G_2.segment5,
+G_2.segment6,
+G_2.segment7
+,CE.ACCOUNTING_EVENT_ID
+order by ce.source_doc_number
+)a
+where sign((a.ar + nvl(a.tax,0)) - a.GLADJAMT) = 1
+
+
+)
+-- where docnumber||receipt_number||shipment_number||line_number||Source  not in (select distinct  REFERENCE_1||REFERENCE_2||REFERENCE_3||REFERENCE_4||REFERENCE_5 from gl_je_lines where REFERENCE_1  is not null )
+group BY
+primaryledger,gl_Date,receipt_number,docnumber,segment1,segment2,segment3,segment4,segment5,segment6,segment7,JOURNAL,BATCH,
+shipment_number,REQ,ITEM,line_number,source,category
+
+)
+ union ALL --G3 G4
+(SELECT distinct
+primaryledger,
+gl_Date Effective_Date,
+gl_date Journal_creation_date,
+ Source,
+ Category,
+segment1,
+segment2,
+segment3,
+segment4,
+segment5,
+segment6,
+segment7,
+ROUND(sum(entered_dr),2) entered_dr,
+ROUND(sum(entered_cr),2) entered_cr,
+'TransferOrder_RptVar_'||docnumber||' '||TO_CHAR(SYSDATE,'MMDDYYYY') BATCH_NAME,
+'Transfer Order-'||docnumber||' '||'Receipt-'||receipt_number BATCH_DESCRIPTION,
+'TransferOrder_RptVar_'||docnumber||' '||TO_CHAR(SYSDATE,'MMDDYYYY')  JOURNAL_NAME,
+'Transfer Order-'||docnumber||' '||'Receipt-'||receipt_number||' '||'Requisition-'||req JOURNAL_DESCRIPTION,
+'Transfer Order-'||docnumber||' '||'Receipt-'||receipt_number||' '||'Requisition-'||req||' '||'Shipment -'||shipment_number||' '||'Item -'||item LINE_DESCRIPTION,
+docnumber,
+receipt_number,
+shipment_
